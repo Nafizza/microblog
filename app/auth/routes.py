@@ -9,6 +9,8 @@ from app.auth.forms import LoginForm, RegistrationForm, \
     ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 from app.auth.email import send_password_reset_email
+from flask import current_app, jsonify
+from app.models import Post
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -29,7 +31,7 @@ def login():
         return redirect(next_page)
     return render_template('auth/login.html', title=_('Sign In'), form=form)
 
-
+#
 @bp.route('/logout')
 def logout():
     logout_user()
@@ -83,3 +85,19 @@ def reset_password(token):
         flash(_('Your password has been reset.'))
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
+
+@bp.route('/post/<int:post_id>/like', methods=['POST'])
+def like_post(post_id):
+    current_app.logger.info(f"Received like request for post {post_id}")
+    post = Post.query.get_or_404(post_id)
+    post.likes += 1
+    db.session.commit()
+    return jsonify({'likes': post.likes, 'dislikes': post.dislikes})
+
+@bp.route('/post/<int:post_id>/dislike', methods=['POST'])
+def dislike_post(post_id):
+    current_app.logger.info(f"Received dislike request for post {post_id}")
+    post = Post.query.get_or_404(post_id)
+    post.dislikes += 1
+    db.session.commit()
+    return jsonify({'likes': post.likes, 'dislikes': post.dislikes})
