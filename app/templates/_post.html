@@ -25,6 +25,39 @@
                                 '{{ g.locale }}');">{{ _('Translate') }}</a>
                 </span>
                 {% endif %}
+                <br><br>
+
+                <!-- Like and Dislike Section -->
+                <p>
+                    Likes: <span id="likes-{{ post.id }}">{{ post.likes }}</span>
+                    Dislikes: <span id="dislikes-{{ post.id }}">{{ post.dislikes }}</span>
+                </p>
+                <button onclick="likePost('{{ post.id|int }}')">Like</button>
+                <button onclick="dislikePost('{{ post.id|int }}')">Dislike</button>
+
             </td>
         </tr>
     </table>
+
+    <script>
+        function likePost(postId) {
+          fetch(`auth/post/${postId}/like`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById(`likes-${postId}`).innerText = data.likes;
+              document.getElementById(`dislikes-${postId}`).innerText = data.dislikes;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      
+        function dislikePost(postId) {
+          fetch(`auth/post/${postId}/dislike`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById(`likes-${postId}`).innerText = data.likes;
+              document.getElementById(`dislikes-${postId}`).innerText = data.dislikes;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      </script>
+      

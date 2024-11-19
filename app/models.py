@@ -294,6 +294,12 @@ class Post(SearchableMixin, db.Model):
                                                index=True)
     language: so.Mapped[Optional[str]] = so.mapped_column(sa.String(5))
 
+    # New columns for like/dislike counts
+    likes: so.Mapped[int] = so.mapped_column(default=0)
+    dislikes: so.Mapped[int] = so.mapped_column(default=0)
+    likes = db.Column(db.Integer, default=0)
+    dislikes = db.Column(db.Integer, default=0)
+
     author: so.Mapped[User] = so.relationship(back_populates='posts')
 
     def __repr__(self):
