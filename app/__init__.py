@@ -31,6 +31,7 @@ babel = Babel()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    print("Database URI:", app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
     migrate.init_app(app, db)
